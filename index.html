@@ -3,18 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Clash Royale 2026 - Ultra Pro</title>
+    <title>Clash Royale 2026 - Ultra Loop</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
     <style>
         :root {
-            --elixir: #f03e9b;
-            --player: #3b82f6;
-            --enemy: #ef4444;
+            --elixir-purple: #a855f7;
+            --deploy-color: #fbbf24;
         }
 
         body { 
-            background: #05080f; 
+            background: #020617; 
             margin: 0; 
             height: 100vh;
             display: flex;
@@ -25,153 +24,260 @@
             color: white;
         }
 
-        /* ЕФЕКТИ НА ФОНА (КАТО ПРИ КАЛКУЛАТОРА) */
-        .orb {
+        /* ЕФЕКТИ НА ФОНА */
+        .bg-glow {
             position: absolute;
-            width: 400px; height: 400px;
-            border-radius: 50%;
-            filter: blur(100px);
-            opacity: 0.2;
+            width: 500px; height: 500px;
+            background: var(--elixir-purple);
+            filter: blur(120px);
+            opacity: 0.15;
             z-index: 1;
         }
-        .orb-blue { background: var(--player); top: -10%; left: -10%; }
-        .orb-red { background: var(--enemy); bottom: -10%; right: -10%; }
 
-        /* ГЛАВЕН КОНТЕЙНЕР - ОПТИМИЗИРАН ЗА КОМПЮТЪР */
+        /* ГЛАВЕН КОНТЕЙНЕР */
         #game-wrapper {
             position: relative;
             z-index: 10;
             width: 95%;
-            max-width: 450px;
-            height: 90vh;
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 420px;
+            height: 92vh;
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(25px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
             border-radius: 3rem;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 50px 100px rgba(0,0,0,0.8);
-            overflow: hidden;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.9);
         }
 
         /* АРЕНА */
         #arena {
             flex: 1;
             position: relative;
-            background: rgba(0,0,0,0.2);
-            margin: 15px;
-            border-radius: 2rem;
-            border: 2px solid rgba(255,255,255,0.05);
+            margin: 10px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 2.5rem;
             overflow: hidden;
-        }
-
-        .river {
-            position: absolute;
-            top: 50%; width: 100%; height: 20px;
-            background: rgba(59, 130, 246, 0.2);
-            transform: translateY(-50%);
-            border-top: 1px solid rgba(59, 130, 246, 0.4);
         }
 
         /* КУЛИ */
         .tower {
             position: absolute;
-            width: 70px; height: 70px;
+            width: 80px; height: 80px;
             background-size: contain; background-repeat: no-repeat;
             z-index: 20; display: flex; justify-content: center;
         }
         .tower.player { bottom: 20px; left: 50%; transform: translateX(-50%); background-image: url('https://cdn-icons-png.flaticon.com/512/3021/3021664.png'); }
-        .tower.enemy { top: 20px; left: 50%; transform: translateX(-50%) rotate(180deg); background-image: url('https://cdn-icons-png.flaticon.com/512/3021/3021664.png'); filter: hue-rotate(140deg); }
+        .tower.enemy { top: 20px; left: 50%; transform: translateX(-50%) rotate(180deg); background-image: url('https://cdn-icons-png.flaticon.com/512/3021/3021664.png'); filter: hue-rotate(180deg); }
+
+        /* ГЕРОИ (ЕДИНИЦИ) */
+        .unit {
+            position: absolute;
+            width: 45px; height: 45px;
+            background-size: contain; background-repeat: no-repeat;
+            z-index: 30; transition: top 0.1s linear, left 0.1s linear;
+        }
 
         /* HP БАРОВЕ */
         .hp-box {
-            width: 50px; height: 6px; background: #000; border: 1px solid #fff;
-            border-radius: 3px; position: absolute; top: -12px; overflow: hidden;
+            width: 40px; height: 5px; background: #000; border: 1px solid #fff;
+            border-radius: 3px; position: absolute; top: -10px; left: 50%; transform: translateX(-50%); overflow: hidden;
         }
         .hp-fill { height: 100%; width: 100%; transition: width 0.2s; }
-        .fill-p { background: var(--player); }
-        .fill-e { background: var(--enemy); }
+        .fill-p { background: #3b82f6; }
+        .fill-e { background: #ef4444; }
 
-        /* ЕДИНИЦИ */
-        .unit {
-            position: absolute;
-            width: 35px; height: 35px;
-            background-size: contain; background-repeat: no-repeat;
-            z-index: 30; transition: transform 0.1s linear;
+        /* ВРЕМЕВА ЛИНИЯ ПРИ ПУСКАНЕ (DEPLOY) */
+        .deploy-bar {
+            position: absolute; bottom: -5px; width: 100%; height: 4px;
+            background: var(--deploy-color); border-radius: 2px;
+            animation: deploy-anim 1s linear forwards;
         }
+        @keyframes deploy-anim { from { width: 0%; } to { width: 100%; } }
 
-        /* UI ПАНЕЛ */
+        /* ИНТЕРФЕЙС */
         #ui {
-            height: 200px;
-            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            background: rgba(0,0,0,0.4);
             border-top: 1px solid rgba(255,255,255,0.1);
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
+            border-radius: 0 0 3rem 3rem;
         }
 
         .elixir-container {
-            width: 100%; height: 16px; background: rgba(0,0,0,0.5);
-            border-radius: 10px; border: 1px solid #444; overflow: hidden; position: relative;
+            width: 100%; height: 18px; background: #1e1b4b;
+            border-radius: 10px; border: 2px solid #4c1d95; overflow: hidden; position: relative; margin-bottom: 10px;
         }
-        #elixir-bar { width: 0%; height: 100%; background: linear-gradient(90deg, #d53f8c, #f687b3); transition: width 0.1s; }
+        #elixir-bar { width: 0%; height: 100%; background: linear-gradient(90deg, #a855f7, #d8b4fe); transition: width 0.1s; }
 
-        .hand { display: flex; gap: 10px; }
+        .hand { display: flex; justify-content: center; gap: 8px; }
         .card {
-            width: 70px; height: 90px;
+            width: 75px; height: 95px;
             background: rgba(255,255,255,0.05);
             border: 2px solid rgba(255,255,255,0.1);
             border-radius: 1rem;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; position: relative; transition: 0.2s;
+            cursor: pointer; position: relative; transition: 0.3s;
         }
-        .card:hover:not(.locked) { transform: translateY(-5px); border-color: #fff; background: rgba(255,255,255,0.1); }
-        .card.locked { opacity: 0.3; cursor: not-allowed; filter: grayscale(1); }
+        .card:hover:not(.locked) { transform: translateY(-8px); border-color: var(--elixir-purple); }
+        .card.locked { opacity: 0.3; filter: grayscale(1); }
         .card-cost {
-            position: absolute; top: -5px; left: -5px; width: 22px; height: 22px;
-            background: var(--elixir); border-radius: 50%; display: flex; 
-            align-items: center; justify-content: center; font-size: 10px; border: 1px solid #fff;
+            position: absolute; top: -6px; left: -6px; width: 24px; height: 24px;
+            background: var(--elixir-purple); border-radius: 50%; display: flex; 
+            align-items: center; justify-content: center; font-size: 11px; border: 1.5px solid #fff;
         }
-        .card img { width: 40px; height: 40px; margin-bottom: 5px; }
-        .card span { font-size: 8px; color: #aaa; }
+        .card img { width: 55px; height: 55px; object-fit: contain; }
     </style>
 </head>
 <body>
 
-<div class="orb orb-blue"></div>
-<div class="orb orb-red"></div>
+<div class="bg-glow"></div>
 
 <main id="game-wrapper">
     <div id="arena">
-        <div class="river"></div>
-        
-        <div class="tower enemy" id="e-tower">
-            <div class="hp-box"><div id="e-hp-bar" class="hp-fill fill-e"></div></div>
-        </div>
-        <div class="tower player" id="p-tower">
-            <div class="hp-box"><div id="p-hp-bar" class="hp-fill fill-p"></div></div>
-        </div>
-
+        <div class="tower enemy" id="e-tower"><div class="hp-box"><div id="e-hp-bar" class="hp-fill fill-e"></div></div></div>
+        <div class="tower player" id="p-tower"><div class="hp-box"><div id="p-hp-bar" class="hp-fill fill-p"></div></div></div>
         <div id="stage"></div>
     </div>
 
     <div id="ui">
         <div class="elixir-container">
             <div id="elixir-bar"></div>
-            <div class="absolute inset-0 flex justify-center items-center text-[9px]">💧 ELIXIR: <span id="elixir-val" class="ml-1">0</span></div>
+            <div class="absolute inset-0 flex justify-center items-center text-[10px]">💧 ELIXIR: <span id="elixir-val" class="ml-1">0</span></div>
         </div>
+        <div class="hand" id="hand"></div>
+    </div>
+</main>
 
-        <div class="hand">
-            <div class="card locked" id="c-knight" onclick="play('knight')">
-                <div class="card-cost">3</div>
-                <img src="https://cdn-icons-png.flaticon.com/512/1065/1065524.png">
-                <span>KNIGHT</span>
-            </div>
-            <div class="card locked" id="c-archer" onclick="play('archer')">
-                <div class="card-cost">2</div>
-                <img src="https://cdn-icons-png.flaticon.com/512/3253/3253130.png">
-                <span>ARCHER</span>
-            </div>
-            <div class="card locked" id="c-giant" onclick="play
+<script>
+    let elixir = 0;
+    let world = [];
+    let towers = { p: 500, e: 500 };
+    
+    // Пул от различни герои
+    const heroes = [
+        { name: 'KNIGHT', cost: 3, hp: 150, dmg: 10, speed: 0.4, img: 'https://cdn-icons-png.flaticon.com/512/1065/1065524.png' },
+        { name: 'ARCHER', cost: 2, hp: 80, dmg: 15, speed: 0.6, img: 'https://cdn-icons-png.flaticon.com/512/3253/3253130.png' },
+        { name: 'GIANT', cost: 5, hp: 350, dmg: 20, speed: 0.3, img: 'https://cdn-icons-png.flaticon.com/512/924/924514.png' },
+        { name: 'WIZARD', cost: 4, hp: 100, dmg: 25, speed: 0.5, img: 'https://cdn-icons-png.flaticon.com/512/3669/3669973.png' },
+        { name: 'GOLEM', cost: 8, hp: 600, dmg: 30, speed: 0.2, img: 'https://cdn-icons-png.flaticon.com/512/4334/4334032.png' }
+    ];
+
+    let currentHand = [];
+
+    function initGame() {
+        world.forEach(u => u.el.remove());
+        world = [];
+        towers = { p: 500, e: 500 };
+        document.getElementById('e-hp-bar').style.width = '100%';
+        document.getElementById('p-hp-bar').style.width = '100%';
+        
+        // Генериране на случайна ръка
+        currentHand = [...heroes].sort(() => 0.5 - Math.random()).slice(0, 3);
+        renderHand();
+    }
+
+    function renderHand() {
+        const handEl = document.getElementById('hand');
+        handEl.innerHTML = '';
+        currentHand.forEach(h => {
+            const card = document.createElement('div');
+            card.className = 'card locked';
+            card.id = 'card-' + h.name;
+            card.onclick = () => play(h);
+            card.innerHTML = `<div class="card-cost">${h.cost}</div><img src="${h.img}">`;
+            handEl.appendChild(card);
+        });
+    }
+
+    setInterval(() => {
+        if (elixir < 10) { elixir += 0.03; updateUI(); }
+        if (Math.random() < 0.005) spawn(heroes[Math.floor(Math.random()*heroes.length)], 'enemy');
+        engine();
+    }, 50);
+
+    function updateUI() {
+        document.getElementById('elixir-bar').style.width = (elixir * 10) + '%';
+        document.getElementById('elixir-val').innerText = Math.floor(elixir);
+        currentHand.forEach(h => {
+            const card = document.getElementById('card-' + h.name);
+            if (elixir >= h.cost) card.classList.remove('locked');
+            else card.classList.add('locked');
+        });
+    }
+
+    function play(hero) {
+        if (elixir >= hero.cost) {
+            elixir -= hero.cost;
+            spawn(hero, 'player');
+        }
+    }
+
+    function spawn(hero, team) {
+        const char = document.createElement('div');
+        char.className = `unit ${team}`;
+        char.style.backgroundImage = `url(${hero.img})`;
+        if(team === 'enemy') char.style.filter = 'hue-rotate(160deg) brightness(0.8)';
+        
+        const hb = document.createElement('div');
+        hb.className = 'hp-box';
+        const fill = document.createElement('div');
+        fill.className = `hp-fill ${team === 'player' ? 'fill-p' : 'fill-e'}`;
+        hb.appendChild(fill);
+        char.appendChild(hb);
+
+        // Deploy Bar
+        const deploy = document.createElement('div');
+        deploy.className = 'deploy-bar';
+        char.appendChild(deploy);
+
+        document.getElementById('stage').appendChild(char);
+        
+        setTimeout(() => {
+            deploy.remove();
+            world.push({
+                el: char, fill: fill, team: team, stats: hero,
+                y: team === 'player' ? 82 : 8,
+                hp: hero.hp, active: true
+            });
+        }, 1000); // 1 секунда deploy време
+    }
+
+    function engine() {
+        world.forEach((u, i) => {
+            let canMove = true;
+            world.forEach(other => {
+                if (u.team !== other.team && Math.abs(u.y - other.y) < 7) {
+                    canMove = false;
+                    other.hp -= u.stats.dmg / 20;
+                    other.fill.style.width = (other.hp / other.stats.hp * 100) + '%';
+                }
+            });
+
+            let tDist = u.team === 'player' ? u.y - 12 : 88 - u.y;
+            if (tDist < 5) {
+                canMove = false;
+                let target = u.team === 'player' ? 'e' : 'p';
+                towers[target] -= u.stats.dmg / 30;
+                document.getElementById(`${target}-hp-bar`).style.width = (towers[target] / 5) + '%';
+            }
+
+            if (canMove) {
+                u.y += (u.team === 'player' ? -u.stats.speed : u.stats.speed);
+                u.el.style.top = u.y + '%';
+                u.el.style.left = '50%';
+                u.el.style.transform = 'translateX(-50%)';
+            }
+
+            if (u.hp <= 0) { u.el.remove(); world.splice(i, 1); }
+        });
+
+        if (towers.e <= 0 || towers.p <= 0) {
+            alert(towers.e <= 0 ? "ПОБЕДА! СЛЕДВАЩА БИТКА..." : "ЗАГУБА! ОПИТАЙ ПАК...");
+            initGame();
+        }
+    }
+
+    initGame();
+</script>
+</body>
+</html>
