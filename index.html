@@ -3,13 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Clash Royale 2026 - Ultra Loop</title>
+    <title>Clash Royale 2026</title>
+    
+    <link rel="icon" type="image/png" href="https://supercell.com/images/27/all_games_clash_royale.60f4776e.png">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
+    
     <style>
         :root {
             --elixir-purple: #a855f7;
-            --deploy-color: #fbbf24;
+            --deploy-gold: #fbbf24;
+            --blue: #3b82f6;
+            --red: #ef4444;
         }
 
         body { 
@@ -21,33 +27,22 @@
             justify-content: center;
             font-family: 'Luckiest Guy', cursive;
             overflow: hidden;
-            color: white;
         }
 
-        /* ЕФЕКТИ НА ФОНА */
-        .bg-glow {
-            position: absolute;
-            width: 500px; height: 500px;
-            background: var(--elixir-purple);
-            filter: blur(120px);
-            opacity: 0.15;
-            z-index: 1;
-        }
-
-        /* ГЛАВЕН КОНТЕЙНЕР */
+        /* КОНТЕЙНЕР (Оптимизиран за PC и Mobile) */
         #game-wrapper {
             position: relative;
-            z-index: 10;
             width: 95%;
             max-width: 420px;
             height: 92vh;
-            background: rgba(255, 255, 255, 0.02);
-            backdrop-filter: blur(25px);
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(20px);
             border: 2px solid rgba(255, 255, 255, 0.1);
-            border-radius: 3rem;
+            border-radius: 2.5rem;
             display: flex;
             flex-direction: column;
             box-shadow: 0 40px 100px rgba(0,0,0,0.9);
+            z-index: 10;
         }
 
         /* АРЕНА */
@@ -55,94 +50,91 @@
             flex: 1;
             position: relative;
             margin: 10px;
-            background: rgba(0,0,0,0.3);
-            border-radius: 2.5rem;
+            background: #1e293b;
+            border-radius: 2rem;
             overflow: hidden;
+            border: 4px solid #0f172a;
         }
 
         /* КУЛИ */
         .tower {
             position: absolute;
-            width: 80px; height: 80px;
+            width: 70px; height: 90px;
             background-size: contain; background-repeat: no-repeat;
             z-index: 20; display: flex; justify-content: center;
         }
-        .tower.player { bottom: 20px; left: 50%; transform: translateX(-50%); background-image: url('https://cdn-icons-png.flaticon.com/512/3021/3021664.png'); }
-        .tower.enemy { top: 20px; left: 50%; transform: translateX(-50%) rotate(180deg); background-image: url('https://cdn-icons-png.flaticon.com/512/3021/3021664.png'); filter: hue-rotate(180deg); }
+        .tower.player { bottom: 10px; left: 50%; transform: translateX(-50%); background-image: url('https://cdn-icons-png.flaticon.com/512/3021/3021664.png'); }
+        .tower.enemy { top: 10px; left: 50%; transform: translateX(-50%) rotate(180deg); background-image: url('https://cdn-icons-png.flaticon.com/512/3021/3021664.png'); filter: hue-rotate(140deg); }
 
-        /* ГЕРОИ (ЕДИНИЦИ) */
+        /* ГЕРОИ */
         .unit {
             position: absolute;
-            width: 45px; height: 45px;
+            width: 50px; height: 50px;
             background-size: contain; background-repeat: no-repeat;
             z-index: 30; transition: top 0.1s linear, left 0.1s linear;
         }
 
-        /* HP БАРОВЕ */
         .hp-box {
-            width: 40px; height: 5px; background: #000; border: 1px solid #fff;
-            border-radius: 3px; position: absolute; top: -10px; left: 50%; transform: translateX(-50%); overflow: hidden;
+            width: 45px; height: 6px; background: #000; border: 1px solid #fff;
+            border-radius: 3px; position: absolute; top: -12px; left: 50%; transform: translateX(-50%); overflow: hidden;
         }
         .hp-fill { height: 100%; width: 100%; transition: width 0.2s; }
-        .fill-p { background: #3b82f6; }
-        .fill-e { background: #ef4444; }
+        .fill-p { background: var(--blue); }
+        .fill-e { background: var(--red); }
 
-        /* ВРЕМЕВА ЛИНИЯ ПРИ ПУСКАНЕ (DEPLOY) */
+        /* DEPLOY BAR */
         .deploy-bar {
             position: absolute; bottom: -5px; width: 100%; height: 4px;
-            background: var(--deploy-color); border-radius: 2px;
+            background: var(--deploy-gold); border-radius: 2px;
             animation: deploy-anim 1s linear forwards;
         }
         @keyframes deploy-anim { from { width: 0%; } to { width: 100%; } }
 
-        /* ИНТЕРФЕЙС */
+        /* UI */
         #ui {
-            padding: 15px;
-            background: rgba(0,0,0,0.4);
-            border-top: 1px solid rgba(255,255,255,0.1);
-            border-radius: 0 0 3rem 3rem;
+            padding: 20px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 0 0 2.5rem 2.5rem;
         }
 
         .elixir-container {
-            width: 100%; height: 18px; background: #1e1b4b;
-            border-radius: 10px; border: 2px solid #4c1d95; overflow: hidden; position: relative; margin-bottom: 10px;
+            width: 100%; height: 20px; background: #2d1b4e;
+            border-radius: 10px; border: 2px solid #581c87; overflow: hidden; position: relative; margin-bottom: 15px;
         }
-        #elixir-bar { width: 0%; height: 100%; background: linear-gradient(90deg, #a855f7, #d8b4fe); transition: width 0.1s; }
+        #elixir-bar { width: 0%; height: 100%; background: linear-gradient(90deg, #a855f7, #d8b4fe); }
 
-        .hand { display: flex; justify-content: center; gap: 8px; }
+        .hand { display: flex; justify-content: center; gap: 10px; }
         .card {
-            width: 75px; height: 95px;
-            background: rgba(255,255,255,0.05);
-            border: 2px solid rgba(255,255,255,0.1);
-            border-radius: 1rem;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; position: relative; transition: 0.3s;
+            width: 80px; height: 105px;
+            background: #334155; border: 2px solid #475569;
+            border-radius: 12px; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; cursor: pointer;
+            position: relative; transition: 0.2s;
         }
-        .card:hover:not(.locked) { transform: translateY(-8px); border-color: var(--elixir-purple); }
-        .card.locked { opacity: 0.3; filter: grayscale(1); }
+        .card:hover:not(.locked) { transform: translateY(-5px); border-color: #fff; }
+        .card.locked { opacity: 0.3; filter: grayscale(1); cursor: not-allowed; }
         .card-cost {
-            position: absolute; top: -6px; left: -6px; width: 24px; height: 24px;
+            position: absolute; top: -8px; left: -8px; width: 26px; height: 26px;
             background: var(--elixir-purple); border-radius: 50%; display: flex; 
-            align-items: center; justify-content: center; font-size: 11px; border: 1.5px solid #fff;
+            align-items: center; justify-content: center; font-size: 12px; border: 2px solid #fff;
+            color: white;
         }
-        .card img { width: 55px; height: 55px; object-fit: contain; }
+        .card img { width: 60px; height: 60px; object-fit: contain; }
     </style>
 </head>
 <body>
-
-<div class="bg-glow"></div>
 
 <main id="game-wrapper">
     <div id="arena">
         <div class="tower enemy" id="e-tower"><div class="hp-box"><div id="e-hp-bar" class="hp-fill fill-e"></div></div></div>
         <div class="tower player" id="p-tower"><div class="hp-box"><div id="p-hp-bar" class="hp-fill fill-p"></div></div></div>
-        <div id="stage"></div>
+        <div id="entities"></div>
     </div>
 
     <div id="ui">
         <div class="elixir-container">
             <div id="elixir-bar"></div>
-            <div class="absolute inset-0 flex justify-center items-center text-[10px]">💧 ELIXIR: <span id="elixir-val" class="ml-1">0</span></div>
+            <div class="absolute inset-0 flex justify-center items-center text-[11px] text-white">💧 <span id="elixir-val" class="ml-1">0</span></div>
         </div>
         <div class="hand" id="hand"></div>
     </div>
@@ -150,57 +142,56 @@
 
 <script>
     let elixir = 0;
-    let world = [];
-    let towers = { p: 500, e: 500 };
+    let units = [];
+    let towers = { p: 1000, e: 1000 };
     
-    // Пул от различни герои
-    const heroes = [
-        { name: 'KNIGHT', cost: 3, hp: 150, dmg: 10, speed: 0.4, img: 'https://cdn-icons-png.flaticon.com/512/1065/1065524.png' },
-        { name: 'ARCHER', cost: 2, hp: 80, dmg: 15, speed: 0.6, img: 'https://cdn-icons-png.flaticon.com/512/3253/3253130.png' },
-        { name: 'GIANT', cost: 5, hp: 350, dmg: 20, speed: 0.3, img: 'https://cdn-icons-png.flaticon.com/512/924/924514.png' },
-        { name: 'WIZARD', cost: 4, hp: 100, dmg: 25, speed: 0.5, img: 'https://cdn-icons-png.flaticon.com/512/3669/3669973.png' },
-        { name: 'GOLEM', cost: 8, hp: 600, dmg: 30, speed: 0.2, img: 'https://cdn-icons-png.flaticon.com/512/4334/4334032.png' }
+    const heroesData = [
+        { name: 'Knight', cost: 3, hp: 200, dmg: 15, speed: 0.5, img: 'https://cdn-icons-png.flaticon.com/512/1065/1065524.png' },
+        { name: 'Archer', cost: 2, hp: 100, dmg: 20, speed: 0.7, img: 'https://cdn-icons-png.flaticon.com/512/3253/3253130.png' },
+        { name: 'Giant', cost: 5, hp: 500, dmg: 25, speed: 0.3, img: 'https://cdn-icons-png.flaticon.com/512/924/924514.png' },
+        { name: 'Mage', cost: 4, hp: 120, dmg: 35, speed: 0.6, img: 'https://cdn-icons-png.flaticon.com/512/3669/3669973.png' },
+        { name: 'Gnome', cost: 2, hp: 60, dmg: 10, speed: 1.2, img: 'https://cdn-icons-png.flaticon.com/512/4334/4334032.png' }
     ];
 
-    let currentHand = [];
+    let myHand = [];
 
-    function initGame() {
-        world.forEach(u => u.el.remove());
-        world = [];
-        towers = { p: 500, e: 500 };
+    function startLoop() {
+        units.forEach(u => u.el.remove());
+        units = [];
+        towers = { p: 1000, e: 1000 };
         document.getElementById('e-hp-bar').style.width = '100%';
         document.getElementById('p-hp-bar').style.width = '100%';
         
-        // Генериране на случайна ръка
-        currentHand = [...heroes].sort(() => 0.5 - Math.random()).slice(0, 3);
+        // Избиране на 3 случайни героя за тази игра
+        myHand = [...heroesData].sort(() => 0.5 - Math.random()).slice(0, 3);
         renderHand();
     }
 
     function renderHand() {
-        const handEl = document.getElementById('hand');
-        handEl.innerHTML = '';
-        currentHand.forEach(h => {
-            const card = document.createElement('div');
-            card.className = 'card locked';
-            card.id = 'card-' + h.name;
-            card.onclick = () => play(h);
-            card.innerHTML = `<div class="card-cost">${h.cost}</div><img src="${h.img}">`;
-            handEl.appendChild(card);
+        const h = document.getElementById('hand');
+        h.innerHTML = '';
+        myHand.forEach(hero => {
+            const c = document.createElement('div');
+            c.className = 'card locked';
+            c.id = 'card-' + hero.name;
+            c.onclick = () => play(hero);
+            c.innerHTML = `<div class="card-cost">${hero.cost}</div><img src="${hero.img}">`;
+            h.appendChild(c);
         });
     }
 
     setInterval(() => {
-        if (elixir < 10) { elixir += 0.03; updateUI(); }
-        if (Math.random() < 0.005) spawn(heroes[Math.floor(Math.random()*heroes.length)], 'enemy');
+        if (elixir < 10) { elixir += 0.04; updateUI(); }
+        if (Math.random() < 0.006) spawnUnit(heroesData[Math.floor(Math.random()*heroesData.length)], 'enemy');
         engine();
     }, 50);
 
     function updateUI() {
         document.getElementById('elixir-bar').style.width = (elixir * 10) + '%';
         document.getElementById('elixir-val').innerText = Math.floor(elixir);
-        currentHand.forEach(h => {
-            const card = document.getElementById('card-' + h.name);
-            if (elixir >= h.cost) card.classList.remove('locked');
+        myHand.forEach(hero => {
+            const card = document.getElementById('card-' + hero.name);
+            if (elixir >= hero.cost) card.classList.remove('locked');
             else card.classList.add('locked');
         });
     }
@@ -208,76 +199,75 @@
     function play(hero) {
         if (elixir >= hero.cost) {
             elixir -= hero.cost;
-            spawn(hero, 'player');
+            spawnUnit(hero, 'player');
         }
     }
 
-    function spawn(hero, team) {
-        const char = document.createElement('div');
-        char.className = `unit ${team}`;
-        char.style.backgroundImage = `url(${hero.img})`;
-        if(team === 'enemy') char.style.filter = 'hue-rotate(160deg) brightness(0.8)';
+    function spawnUnit(hero, team) {
+        const el = document.createElement('div');
+        el.className = `unit ${team}`;
+        el.style.backgroundImage = `url(${hero.img})`;
+        if(team === 'enemy') el.style.filter = 'hue-rotate(150deg) brightness(0.7)';
         
-        const hb = document.createElement('div');
-        hb.className = 'hp-box';
+        const hp = document.createElement('div');
+        hp.className = 'hp-box';
         const fill = document.createElement('div');
         fill.className = `hp-fill ${team === 'player' ? 'fill-p' : 'fill-e'}`;
-        hb.appendChild(fill);
-        char.appendChild(hb);
+        hp.appendChild(fill);
+        el.appendChild(hp);
 
-        // Deploy Bar
-        const deploy = document.createElement('div');
-        deploy.className = 'deploy-bar';
-        char.appendChild(deploy);
+        const dep = document.createElement('div');
+        dep.className = 'deploy-bar';
+        el.appendChild(dep);
 
-        document.getElementById('stage').appendChild(char);
+        document.getElementById('entities').appendChild(el);
         
         setTimeout(() => {
-            deploy.remove();
-            world.push({
-                el: char, fill: fill, team: team, stats: hero,
-                y: team === 'player' ? 82 : 8,
+            dep.remove();
+            units.push({
+                el, fill, team, stats: hero,
+                y: team === 'player' ? 80 : 10,
                 hp: hero.hp, active: true
             });
-        }, 1000); // 1 секунда deploy време
+        }, 1000);
     }
 
     function engine() {
-        world.forEach((u, i) => {
-            let canMove = true;
-            world.forEach(other => {
-                if (u.team !== other.team && Math.abs(u.y - other.y) < 7) {
-                    canMove = false;
-                    other.hp -= u.stats.dmg / 20;
+        units.forEach((u, i) => {
+            let moving = true;
+            units.forEach(other => {
+                if (u.team !== other.team && Math.abs(u.y - other.y) < 8) {
+                    moving = false;
+                    other.hp -= u.stats.dmg / 25;
                     other.fill.style.width = (other.hp / other.stats.hp * 100) + '%';
                 }
             });
 
-            let tDist = u.team === 'player' ? u.y - 12 : 88 - u.y;
+            let tDist = u.team === 'player' ? u.y - 15 : 85 - u.y;
             if (tDist < 5) {
-                canMove = false;
-                let target = u.team === 'player' ? 'e' : 'p';
-                towers[target] -= u.stats.dmg / 30;
-                document.getElementById(`${target}-hp-bar`).style.width = (towers[target] / 5) + '%';
+                moving = false;
+                let t = u.team === 'player' ? 'e' : 'p';
+                towers[t] -= u.stats.dmg / 40;
+                document.getElementById(`${t}-hp-bar`).style.width = (towers[t] / 10) + '%';
             }
 
-            if (canMove) {
+            if (moving) {
                 u.y += (u.team === 'player' ? -u.stats.speed : u.stats.speed);
                 u.el.style.top = u.y + '%';
                 u.el.style.left = '50%';
                 u.el.style.transform = 'translateX(-50%)';
             }
 
-            if (u.hp <= 0) { u.el.remove(); world.splice(i, 1); }
+            if (u.hp <= 0) { u.el.remove(); units.splice(i, 1); }
         });
 
         if (towers.e <= 0 || towers.p <= 0) {
-            alert(towers.e <= 0 ? "ПОБЕДА! СЛЕДВАЩА БИТКА..." : "ЗАГУБА! ОПИТАЙ ПАК...");
-            initGame();
+            alert(towers.e <= 0 ? "ПОБЕДА! НОВА БИТКА..." : "ЗАГУБА! ОПИТАЙ ПАК...");
+            startLoop();
         }
     }
 
-    initGame();
+    startLoop();
 </script>
 </body>
 </html>
